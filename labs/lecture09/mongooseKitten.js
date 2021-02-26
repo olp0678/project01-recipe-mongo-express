@@ -10,6 +10,8 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log('Connected');
+    //below write code , now can write schema
+
 
     //mongoose give us a new schema , defition name : string data type
     var kittySchema = mongoose.Schema({
@@ -23,6 +25,7 @@ db.once('open', function() {
 
     //this model allows to create documents in the database, using kittyschema
     //name of the mode, kitten. collection will be called kitten.
+    //compliled schema into a model.
     var Kitten = mongoose.model('Kitten', kittySchema);
 
     var silence = new Kitten({ name: 'Silence' });
@@ -31,10 +34,13 @@ db.once('open', function() {
     var fluffy = new Kitten({ name: 'fluffy' });
     fluffy.speak(); // "Meow name is fluffy"
 
+
+    //tO PUT IN DATABASE
     fluffy.save(function (err, fluffy) {
     if (err) return console.error(err);
     fluffy.speak();
 
+    //query 
     Kitten.find(function (err, kittens) {
         if (err) return console.error(err);
         console.log(kittens);
