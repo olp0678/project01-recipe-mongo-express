@@ -1,0 +1,104 @@
+Document your Mongoose schema and API design (25 points)
+1)Describe each of the schemas that you created for Mongoose, and why you chose
+the types and validation requirements you did for each of the schema's attributes
+
+1)
+recipeSchema , one object is created for each recipe , that will be added to
+the database and made part of the Recipe collection of objects. Each recipe
+will include: a name, a description, a pictureUrl, prepTime, cookingTime,
+directions, ingredients, and links to the id number of any reviews. Users
+can submit reviews which are associated with any recipe they can view.
+All attributes are required because they are listed as required on the assignment.
+name, description and pictureUrl are string type because each can be represented
+by a single field of characters.
+directions is a string array because is a set of instructions set in order so
+is a list.
+ingredients is an array of ingredients objects each of which include name and
+amount.
+Reviews is an array of objectsID's for reviews objects.
+
+reviewSchema, each review is attached to a specific recipe giving between
+1 and 5 stars and describing the user opinion of that recipe. The date of the
+review and the user username are both automatically attached to each review.
+All attributes are required because they are listed as required on the assignment.
+description is a string which allows the user to express their opinions as input
+into a textbox.
+rating, is a number with min and max values which limits the user to giving
+a 1 to 5 stars rating.
+date, which is automatically provided by the system when the review is created,
+uses the native date format.
+user, associates the review to the user's username. It is a string rathen than
+an objectId field, so that it may remain even if the user is deleted.
+
+userSchema, each user has a unique username and email address, and each user
+must have a first and last name. This information is linked to the user's reviews.
+All attributes are required because they are listed as required on the assignment,
+in addition to the full name being required within that field, the first name and
+last name subfields are both required. This prevents problems from having no data
+in one of these fields.
+userName, must be unique so that each user is associate with a different username,
+since reviews are sorted by username.
+email, must also be unique so that each user is associated with a different email.
+
+2)Describe your RESTful API, including what routes you created, what HTTP methods
+are available for each route, what payloads are required and/or returned for
+each route, and what response codes can be returned for each route
+
+// GET methods
+
+router.get('/:id', controller.showRecipe);
+router.get('/:id', controller.showReview);
+router.get('/:id', controller.showUser);
+
+each show route is used to provide the data associated with one of the three
+collections, depending on whether you need to retrieve a recipe, review or
+user.
+For the show's method, no payload is required other than making the url or get
+method has an ID as a parameter.
+For the response codes, we are returning a 200 status code if the id is found,
+and 404 satus code if the id is not found. There is a 400 status code if there
+is a invalid request.
+The payload return is an object from appropriate collection.
+
+// POST method
+router.post('/', controller.createRecipe);
+router.post('/', controller.createReview);
+router.post('/', controller.createUser);
+
+each create route is used to add a new object to the appropriate collection,
+the object data is in cincluded in the post method and objectid will be created
+as part of the implementation of the method.
+The required payload is the object to be created and the id's of any objects that
+the new object has to be linked to. The return payload is the newly created object.
+If the objects are successfully created, we get status 201 otherwise status 400.
+
+When a new review is created , its objectID it is also linked to the recipe it
+reviews. The updateRecipe is called from this.
+
+// PUT method
+router.put('/:id', controller.updateRecipe);
+router.put('/:id', controller.updateReview);
+router.put('/:id', controller.updateUser);
+
+Each update route, finds an existing object in the appropriate collection and
+sets its fields to update values. The required payload is the object with one
+or more changed fields to be updated. The updated object is the return payload.
+If the object is found and succesfully update, code status 200 is sent, otherwise
+status 404 is sent.
+
+// DELETE method
+router.delete('/:id', controller.destroyRecipe);
+router.delete('/:id', controller.destroyReview);
+router.delete('/:id', controller.destroyUser);
+
+each delete route finds an existing object in the appropriate collection and
+removes it from the collection. No payload is required or returned. If the
+object is founf and review, status code 204 is returned, otherwise status code
+400 is returned.
+
+BONUTS POINT:
+
+When creating each review the users objectid is used to find the unique username
+and associated that with the review, this has the advantage that if the user is
+removed , that user's review can remain in the collections. This has been
+implemented. 

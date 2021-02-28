@@ -1,0 +1,247 @@
+- RESTful API design
+- Express.js routing
+- MVC architecture
+- storing data in MongoDB via Mongoose
+
+Objectives
+-Design a RESTful API for creating, reading, updating, and removing recipes
+-Document your API so that others can understand how to use your service
+-Develop a schema for MongoDB using Mongoose for storing recipes
+-Deploy your app to Heroku so that anyone on the Internet can use your service!
+
+1. recipe
+    Required attributes:
+        Name of recipe
+        Description of recipe
+        Picture URL for recipe
+        Prep time (minutes)
+        Cooking time (minutes)
+        Array of directions (i.e. step by step directions)
+        Array of ingredients
+            Must be implemented as a subdocument
+        Array of user reviews
+            Must be implemented as an Array of ObjectIds referencing reviews collection
+
+2. reviews
+    Required attributes:
+        Review description
+        Review rating (i.e. number of stars)
+        Date review was created
+            This should be set by the server
+        User creating review (implemented as an ObjectId referencing users collection)
+
+3. users
+    Required attributes:
+        Full Name
+            Implemented as a subdocument
+                Required attributes:
+                    First name
+                    Last name
+        Username
+            This field should be unique
+        Email address
+            This field should be unique
+
+-Create a RESTful API that allows for CRUD against recipes, users,
+and reviews (45 points)
+-Users are created independent from recipes
+-When creating recipes, reviews cannot be created at the same time
+    All other attributes can be included, but reviews must be added separately
+-Reviews are created as a sub-resource of a recipe
+    When the client sends the JSON payload for a new review to the API, the user
+    field will be sent as the ObjectId of the user that created the review
+
+Document your Mongoose schema and API design
+-Describe each of the schemas that you created for Mongoose, and why you chose
+the types and validation requirements you did for each of the schema's attributes
+- Describe your RESTful API, including what routes you created, what HTTP methods
+are available for each route, what payloads are required and/or returned for
+each route, and what response codes can be returned for each route
+
+-----------------------------------------------------------------------------
+Jan 14, 2021 (1st class)
+
+fours containers:
+    1. mongodb
+    2.web2-node.js
+    3,4 selenium
+
+image is the software that is running inside computer.
+-HEROKU PaaP
+-----------------------------------------------------------------------------
+Jan 19, 2021
+Node.js -> server-side JavaScript, single-threaded.
+        perform I/O asynchronously
+Node.js can use filesystem using the fs module.
+-all common operations CRUD with fs module.
+Node.js feature streams.
+stream chaining(common in javascript)
+-callback , without blocking
+-method chaining, implementation pattern common OOL
+-Promise chain example ((((lecture 3))))
+-Promises are cleaner way to chain asynchronous actions together.
+-return an object, then called .then on object,
+-lab03 4 functions, asynchronously
+----------------------------------------------------------------------------
+Jan 21, 2021
+RESTful API, architectual style for application programm. interface.
+-for web dev, HTTP protocol.
+-GET(safe and idempotent), POST(neither safe nor idempotent)
+-HTTP Response Codes. 500 server errors, 400 clients error.
+use sub-resources for relationships.
+server middleman, browser and database.
+-support pagination, filtering, sorting.
+Express.js - framework for building server using node.js
+-Easy URL routing.
+\server\api\users (user, controller, model)
+-route.js , users.router , from ./api/users
+restful API, respond in JSON, take paylods in JSON.
+-export function listContents, export function createUser
+lab 04, postman
+last part o find by id, findOne, id printed got bound by req.params.id
+-(((Lecture 4)))
+---------------------------------------------------------------------------
+Jan 26,2021
+solution lab4 for POST and GET lab. week2 -> routes.js , index.js , users.js
+solution lab3
+.toString() -> utf encoding
+router.js is inside server file.
+index.js and under.js inside api/users.
+postman,  talking over the local network through JSON.
+postman , curl, min 52,
+json, everything have to be quoted.
+1:08 , after ?  you can write a query.
+PUT (update resource, if ID provided, make new user, UPSERT )
+PATCH (generally used to update, partial attribution)
+DELETE
+------------------------------------------------------------------------
+Jan 28,2021
+week 3 solution lab05, index.js and user.js
+start on Lecture 6, MVC
+min 18:00 , explained updateuser
+min 26 , explain delete.
+MVC - Data(model), Presentation(View), Business Logic (Controller), min 34
+Model: Mongoose Schema
+Controller: controller file used by express.js router
+view: Angular application
+Sample MVC workflow.
+ROUTER, its our index.js file!!, only mission is to route.
+CONTROLER, logic servicing the request. Min 47. Code focus on reading/validating
+request data, constructing find/save queries for the data, then returning data
+to the response.
+DATA, logic specific to storage, retrieval, and updating of data within you
+datastore should be isolated in its own file.
+-we will create user.model.js delegate manipulation of array (data)
+Angular is our View.
+-user.js to user.controller.js (need update to start using class from user.model.js)
+-user.model.js now our data model, interface to this array (Users: [])min 1:04hr
+-data.model will validate data.
+-----------------------------------------------------------------------
+Feb 02,2021
+-week 04
+-Start talking about Mongo.
+-Project1 , is database and API.
+Document database.
+-storing JSON in the database
+-Mongo does not enforce a schema.
+-uses construct concept of nested information.
+-internally it stored as BSON, you interact as json.
+-EACH document stored in mondoDB gets assigned a unique identifier, _id
+-documents can contain attributes that are subdocuments.
+-document database, assumption into how you're gonna use the data.
+-From MVC, model will enforce constraint in your database.
+-Robo at 48:00 min.
+-mongo --host web2-mongodb:27017 book @ 54:00 minutes
+-show dbs -> show databases
+-when will insert(document) data into book database, min 58 , collection name towns
+-mayor is a subdocument. a document within a document.
+-verify collections, via show collections
+-db.towns.find().pretty() -> show all content within collection.
+-Mongo uses javascript as native language.
+-collection, same as table in sql databases.
+-insertCity.js at 01:12 hr (function insertCity)
+"famousFor" : [
+        "the MOMA",
+        "food",                        --> array
+        "Derek Jeter"
+    ],
+    "mayor" : {
+        "name" : "Bill de Blasio",     ---object
+        "party" : "D"
+    }
+-db.towns.find({ "_id" : ObjectId("59094288afbc9350ada6b807") })
+-db.towns.find({ _id : ObjectId("59094288afbc9350ada6b807") }, { name : 1 })
+-db.towns.find({ _id : ObjectId("59094288afbc9350ada6b807") }, { name : 0 })
+-db.towns.find({ name : /^P/, population : { $lt : 10000 } },
+   { _id: 0, name : 1, population : 1 })
+-var population_range = { $lt: 1000000, $gt: 10000 }
+db.towns.find({ name : /^P/, population : population_range }, { name: 1 })
+---------------------------------------------------------------------------
+Feb 04, 2021
+db.countries.count()
+db.countries.find(
+{ 'exports.foods.name' : 'bacon', 'exports.foods.tasty' : true },{ _id : 0, name : 1 })
+-$elemMatch
+-db.countries.find({
+        $or : [{ _id : "mx" }, { name : "United States" } ]
+    }, { _id:1 })
+-db.towns.update(
+    { _id : ObjectId("5e3347ab2c753e104d3a326c") },
+    { $set : { "state" : "OR" } } );
+-db.towns.findOne({ _id : ObjectId("5e3347ab2c753e104d3a326c") })
+-db.towns.update(
+   { _id : ObjectId("5e3347972c753e104d3a326b") },
+   { $inc : { population : 1000} }
+)
+-Removing data is easy! Just replace find() with remove() and everything
+that matches the criteria will be deleted!
+-db.towns.find(function() {
+return this.population > 6000 && this.population < 600000; })
+-db.towns.find("this.population > 6000 && this.population < 600000")
+-db.towns.find({
+   $where: "this.population > 6000 && this.population < 600000",
+   famousFor: /Phil/
+})
+-A set of documents is called a collection in Mongo, similar to a table in a
+relational database
+-Finish Lecture 07, and started on Lecture 08.
+-db.phones.find().limit(2)
+-db.phones.count({'components.number': { $gt : 5599999 } })
+-Aggregate @01:10 hr
+-mapReduce at 01:37 hr
+--------------------------------------------------------------------------
+Feb 09,2021
+Mongoose at 40 min
+-Represent what your data should look like.
+-node mongooseKitten.js (establish connection to database)
+-schema example , 1:20 hr
+var schema = new Schema(
+{
+  name: String,
+  binary: Buffer,
+  living: Boolean,
+  updated: { type: Date, default: Date.now },
+  age: { type: Number, min: 18, max: 65, required: true },
+  mixed: Schema.Types.Mixed,
+  _someId: Schema.Types.ObjectId,
+  array: [],
+  // You can also have an array of each of the other types too.
+  ofString: [String],
+  nested: { stuff: { type: String, lowercase: true, trim: true } }
+})
+-Validators
+var breakfastSchema = new Schema({
+  eggs: {
+    type: Number,
+    min: [6, 'Too few eggs'],
+    max: 12
+    required: [true, 'Why no eggs?']
+  },
+  drink: {
+    type: String,
+    enum: ['Coffee', 'Tea', 'Water',]
+  }
+});
+-------------------------------------------------------------------------
+Feb 11, 2021
+-
